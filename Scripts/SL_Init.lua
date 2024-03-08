@@ -162,7 +162,7 @@ local GlobalDefaults = {
 
 			-- Is the music wheel locked? Useful when loading overlay screens
 			self.MusicWheelLocked = false
-			
+
 			self.GameplayReloadCheck = false
 			-- How long to wait before displaying a "cue"
 			self.ColumnCueMinTime = 1.5
@@ -505,6 +505,8 @@ SL = {
 	-- Latest versions available for ITGmania and Simply Love.
 	ITGmaniaLatestVersion = nil,
 	SimplyLoveLatestVersion = nil,
+
+	StageStartTime = 0,
 }
 
 
