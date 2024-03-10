@@ -42,10 +42,12 @@ local function CreditsText( player )
 				if stats.notesHitThisGame > 9999 then
 					stats.notesHitThisGame = tonumber(string.format("%.1f", stats.notesHitThisGame/1000)) .. "k"
 				end
+				
+				local screenName = screen:GetName()
 
 				if (screen == nil) then
 					self:settext(str)
-				elseif (screen:GetName() == "ScreenEvaluationStage") or (screen:GetName() == "ScreenEvaluationNonstop") then
+				elseif (screenName == "ScreenEvaluationStage") or (screenName == "ScreenEvaluationNonstop") or (screenName == "ScreenGameplay") then
 					self:settext(str)
 				elseif player == PLAYER_1 and stats.songsPlayedThisGame > 0 then
 					self:settext(("%s - 💿 %s | ⏱%s:%s | 👟 %s "):format(
@@ -82,7 +84,7 @@ local function CreditsText( player )
 						textColor = color(SL.SRPG8.TextColor)
 						shadowLength = 0.4
 					end
-				elseif (screen:GetName() == "ScreenEvaluationStage") or (screen:GetName() == "ScreenEvaluationNonstop") or (screen:GetName() == "ScreenGameplay") then
+				elseif (screenName == "ScreenEvaluationStage") or (screenName == "ScreenEvaluationNonstop") or (screenName == "ScreenGameplay") then
 					-- ignore ShowCreditDisplay metric for ScreenEval
 					-- only show this BitmapText actor on Evaluation if the player is joined
 					bShow = GAMESTATE:IsHumanPlayer(player)
