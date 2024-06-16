@@ -64,9 +64,10 @@ local permitted_profile_settings = {
 	ErrorBarMultiTick    = "boolean",
 	ErrorBarTrim         = "string",
 
-	ShowFaPlusWindow     = "boolean",
-	ShowEXScore          = "boolean",
-	ShowFaPlusPane       = "boolean",
+	ShowFaPlusWindow       = "boolean",
+	ShowEXScore            = "boolean",
+	ShowFaPlusPane         = "boolean",
+	TighterFantasticWindow = "boolean",
 
 	HideEarlyDecentWayOffJudgments = "boolean",
 	HideEarlyDecentWayOffFlash     = "boolean",
