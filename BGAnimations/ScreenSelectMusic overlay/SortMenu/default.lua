@@ -220,6 +220,7 @@ local function AddSorts()
 	-- so let's just disable the sort orders for course mode.
 	if GAMESTATE:IsCourseMode() then return {} end
 
+
 	return {
 		{{"SortBy", "Series"} },
 		{ {"SortBy", "Group"} },
@@ -232,6 +233,13 @@ local function AddSorts()
 		{ {"SortBy", "Popularity"} },
 		{ {"SortBy", "Recent"} },
 		{ {"SortBy", "TopGrades"} },
+		{ {"SortBy", "PopularityP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "RecentP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "TopP1Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "PopularityP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"SortBy", "RecentP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"SortBy", "TopP2Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"MixTape", "Preferred"}, AddFavorites },
 	}
 end
 
@@ -253,8 +261,11 @@ end
 local function AddPlaylists()
 	if GAMESTATE:IsCourseMode() then return {} end
 
+	local player_sort_options = {
+		{ {"ImLovinIt", "AddFavorite"}, function() return GAMESTATE:GetCurrentSong() ~= nil end},
+	}
+
 	-- First add the machine playlists
-	local player_sort_options = {}
 	-- Get the name of every file in the Other/Playlists directory
 	local files = FILEMAN:GetDirListing(THEME:GetCurrentThemeDirectory().."Other/Playlists/")
 	-- Add each file to the wheel options
@@ -407,14 +418,8 @@ local t = Def.ActorFrame {
 			-- It's technically not possible to reach the sort menu in Casual Mode, but juuust in case let's still
 			-- include the check.
 			--
-			-- Only show GoBack if we're in 3 key navigation mode, as it's redundant in 5 key.
-			{ { "", "GoBack" }, PREFSMAN:GetPreference("ThreeKeyNavigation") },
 			{ {"NextPlease", "SwitchProfile"}, ThemePrefs.Get("AllowScreenSelectProfile") },
-			{ {"GrooveStats", "Leaderboard"}, function() return GAMESTATE:GetCurrentSong() ~= nil end },
 			{ {"WhereforeArtThou", "SongSearch"}, not GAMESTATE:IsCourseMode() and ThemePrefs.Get("KeyboardFeatures") },
-			{ {"ImLovinIt", "AddFavorite"}, function() return GAMESTATE:GetCurrentSong() ~= nil end},
-			{ {"MixTape", "Preferred"}, AddFavorites },
-			{ {"ChangeMode", "Casual"}, SL.Global.Stages.PlayedThisGame == 0 and SL.Global.GameMode ~= "Casual" },
 			{ {"ChangePlayMode", "Nonstop"}, not GAMESTATE:IsCourseMode() and ChangePlayModeAvailable() },
 			{ {"ChangePlayMode", "Regular"}, GAMESTATE:IsCourseMode() and ChangePlayModeAvailable() },
 			{
@@ -423,14 +428,9 @@ local t = Def.ActorFrame {
 				AddSorts(),
 			},
 			{
-				{"", "CategoryProfile"},
-				AddProfileEntries(),
-			},
-			{
 				{"", "CategoryAdvanced"},
 				{
-					{ {"FeelingSalty", "TestInput"}, GAMESTATE:IsEventMode() },
-					{ {"HardTime", "PracticeMode"}, PracticeModeAvailable },
+					{ {"GrooveStats", "Leaderboard"}, function() return GAMESTATE:GetCurrentSong() ~= nil end },
 					-- Loading songs doesn't work from course mode because it invalidates autogen courses,
 					-- which could delete the currently selected course.
 					{ {"TakeABreather", "LoadNewSongs"}, not GAMESTATE:IsCourseMode() },
@@ -440,13 +440,15 @@ local t = Def.ActorFrame {
 				}
 			},
 			{
-				{"", "CategoryStyles"},
-				GetChangeableStyles,
-			},
-			{
 				{"", "CategoryPlaylists"},
 				AddPlaylists,
-			}
+			},
+
+			{ {"HardTime", "PracticeMode"}, PracticeModeAvailable },
+			{ {"ChangeStyle", "Double"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "single" end },
+			{ {"ChangeStyle", "Single"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "double" end },
+			{ {"FeelingSalty", "TestInput"}, GAMESTATE:IsEventMode() },
+			{ { "", "GoBack" }, PREFSMAN:GetPreference("ThreeKeyNavigation") },
 		}
 		self:visible(false)
 	end,
