@@ -3,6 +3,7 @@
 local PlayerDefaults = {
 	__index = {
 		initialize = function(self)
+			print("PlayerDefaults:initialize()")
 			self.ActiveModifiers = {
 				SpeedModType = "M",
 				SpeedMod = 250,

@@ -94,6 +94,7 @@ local filename =  theme_name .. " UserPrefs.ini"
 --    in SL[pn].Stages with songs played for displaying on ScreenEvaluationSummary).
 -- LoadProfileCustom takes care of this for persistent profiles.
 LoadGuest = function(player)
+	print("LoadGuest"..player)
 	GAMESTATE:ResetPlayerOptions(player)
 	local pn = ToEnumShortString(player)
 	local stages = SL[pn].Stages
@@ -105,6 +106,7 @@ end
 -- function assigned to "CustomLoadFunction" under [Profile] in metrics.ini
 LoadProfileCustom = function(profile, dir)
 	local path =  dir .. filename
+	print("LoadProfileCustom("..path..")")
 	local player, pn, filecontents
 
 	-- we've been passed a profile object as the variable "profile"

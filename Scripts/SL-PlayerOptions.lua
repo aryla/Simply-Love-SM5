@@ -999,6 +999,7 @@ end
 -- the former handles "normally" joined players, and the latter handles latejoin
 
 function ApplyMods(player)
+	print("ApplyMods("..player..")")
 	for name,value in pairs(Overrides) do
 		OptRow = CustomOptionRow( name )
 
