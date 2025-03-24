@@ -15,6 +15,7 @@ local af = Def.ActorFrame{
 	end,
 
 	PlayerProfileSetMessageCommand=function(self, params)
+		print("PlayerProfileSetMessageCommand("..params.Player..")")
 		if not PROFILEMAN:IsPersistentProfile(params.Player) then
 			LoadGuest(params.Player)
 		end
@@ -23,6 +24,7 @@ local af = Def.ActorFrame{
 	end,
 
 	PlayerJoinedMessageCommand=function(self, params)
+		print("PlayerJoinedMessageCommand("..params.Player..")")
 		if not PROFILEMAN:IsPersistentProfile(params.Player) then
 			LoadGuest(params.Player)
 		end

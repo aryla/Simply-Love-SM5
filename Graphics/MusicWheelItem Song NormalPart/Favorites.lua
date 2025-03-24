@@ -3,7 +3,9 @@ local pn = ToEnumShortString(player)
 
 local af = Def.ActorFrame {
 	PlayerJoinedMessageCommand=function(self, params)
+		print("Favorites:PlayerJoinedMessageCommand("..params.Player..")")
 		if not PROFILEMAN:IsPersistentProfile(params.Player) then
+			print("ResetPlayerOptions"..params.Player..")")
 			GAMESTATE:ResetPlayerOptions(params.Player)
 			SL[ToEnumShortString(params.Player)]:initialize()
 		end
