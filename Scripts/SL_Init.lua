@@ -509,7 +509,6 @@ SL = {
 	StageStartTime = 0,
 }
 
-
 -- Initialize preferences by calling this method.  We typically do
 -- this from ./BGAnimations/ScreenTitleMenu underlay/default.lua
 -- so that preferences reset between each game cycle.

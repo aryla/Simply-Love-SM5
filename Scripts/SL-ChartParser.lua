@@ -1,4 +1,4 @@
-local GetSimfileString = function(steps)
+GetSimfileString = function(steps)
 	-- steps:GetFilename() returns the filename of the sm or ssc file, including path, as it is stored in SM's cache
 	local filename = steps:GetFilename()
 	if not filename or filename == "" then return end
@@ -157,7 +157,7 @@ end
 --    NoteDataString, a substring from SimfileString that contains the just the requested (minimized) note data
 --    BPMs, a substring from SimfileString that contains the BPM string for this specific chart
 
-local GetSimfileChartString = function(SimfileString, StepsType, Difficulty, StepsDescription, Filetype)
+GetSimfileChartString = function(SimfileString, StepsType, Difficulty, StepsDescription, Filetype)
 	local NoteDataString = nil
 	local BPMs = nil
 
@@ -351,6 +351,9 @@ ParseChartInfo = function(steps, pn)
 	SL[pn].Streams.Sideswitches = techCounts:GetValue("TechCountsCategory_Sideswitches")
 	SL[pn].Streams.Jacks = techCounts:GetValue("TechCountsCategory_Jacks")
 	SL[pn].Streams.Brackets = techCounts:GetValue("TechCountsCategory_Brackets")
+	SL[pn].Streams.Doublesteps = techCounts:GetValue("TechCountsCategory_Doublesteps")
+
+	SL[pn].Streams.TechNotation = SLTechNotation_Format(steps, pn, TechNotationVerboseKey)
 end
 
 -- Computing the GrooveStats hash requires decompressing the chart's NoteData, which is expensive.
