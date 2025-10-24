@@ -78,6 +78,8 @@ local permitted_profile_settings = {
 	HideEarlyDecentWayOffJudgments = "boolean",
 	HideEarlyDecentWayOffFlash     = "boolean",
 
+	PlayerMusicWheelScore = "string",
+
 	----------------------------------
 	-- Profile Settings without OptionRows
 	-- these settings are saved per-profile, but are transparently managed by the theme
