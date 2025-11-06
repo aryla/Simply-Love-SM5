@@ -74,7 +74,7 @@ return {
 			if self.kind == "SortBy" then
 				self.sort_by = info[2]
 
-			elseif self.kind == "ChangeMode" or self.kind == "ChangeStyle" then
+			elseif self.kind == "ChangeMode" or self.kind == "ChangeStyle" or self.kind == "ChangePlayMode" then
 				self.change = info[2]
 
 			else

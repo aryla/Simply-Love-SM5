@@ -324,6 +324,8 @@ local wheel_options = {
 	{ {"GrooveStats", "Leaderboard"}, function() return GAMESTATE:GetCurrentSong() ~= nil end },
         { {"NeedMoreRam", "ViewDownloads"}, DownloadsExist },
         { {"TakeABreather", "LoadNewSongs"} },
+		{ {"ChangePlayMode", "Nonstop"}, function() return SL.Global.GameMode == "ITG" and not GAMESTATE:IsCourseMode() end },
+		{ {"ChangePlayMode", "Regular"}, function() return  SL.Global.GameMode == "ITG" and GAMESTATE:IsCourseMode() end },
         { {"ChangeStyle", "Double"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "single" end },
         { {"ChangeStyle", "Single"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "double" end },
         { {"FeelingSalty", "TestInput"}, GAMESTATE:IsEventMode() },
