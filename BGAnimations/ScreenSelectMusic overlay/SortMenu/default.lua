@@ -184,14 +184,32 @@ local function DownloadsExist()
     return SL.GrooveStats.IsConnected and ThemePrefs.Get("AutoDownloadUnlocks")
 end
 
-local function AddPlayerSortOptions()
-    local player_sort_options = {}
-    for player in ivalues(GAMESTATE:GetHumanPlayers()) do
-        if PROFILEMAN:IsPersistentProfile(player) then
-            table.insert(player_sort_options, {"SortBy", "Top" .. ToEnumShortString(player) .. "Grades"})
-        end
-    end
-    return player_sort_options
+local function AddSorts()
+	-- Most sort orders don't currently work in course mode, they cause the
+	-- wheel to change to song mode instead. The ones that seem work are
+	-- AllCourses, Nonstop, Oni, and Endless. I don't know if those are useful
+	-- so let's just disable the sort orders for course mode.
+	if GAMESTATE:IsCourseMode() then return {} end
+
+	return {
+		{ {"SortBy", "Group"} },
+		{ {"SortBy", "Title"} },
+		{ {"SortBy", "Artist"} },
+		{ {"SortBy", "Genre"} },
+		{ {"SortBy", "BPM"} },
+		{ {"SortBy", "Length"} },
+		{ {"SortBy", "Meter"} },
+		{ {"SortBy", "Popularity"} },
+		{ {"SortBy", "Recent"} },
+		{ {"SortBy", "TopGrades"} },
+		{ {"SortBy", "PopularityP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "RecentP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "TopP1Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
+		{ {"SortBy", "PopularityP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"SortBy", "RecentP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"SortBy", "TopP2Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
+		{ {"MixTape", "Preferred"} }
+	}
 end
 
 local function AddPlaylists()
@@ -295,26 +313,7 @@ local wheel_options = {
         { {"WhereforeArtThou", "SongSearch"}, not GAMESTATE:IsCourseMode() and ThemePrefs.Get("KeyboardFeatures") },
 	{
 		{"", "CategorySorts"},
-		{
-			{ {"SortBy", "Group"} },
-			{ {"SortBy", "Title"} },
-			{ {"SortBy", "Artist"} },
-			{ {"SortBy", "Genre"} },
-			{ {"SortBy", "BPM"} },
-			{ {"SortBy", "Length"} },
-			{ {"SortBy", "Meter"} },
-			{ {"SortBy", "Popularity"} },
-			{ {"SortBy", "Recent"} },
-			{ {"SortBy", "TopGrades"} },
-			{ {"SortBy", "PopularityP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
-			{ {"SortBy", "RecentP1"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
-			{ {"SortBy", "TopP1Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_1) end },
-			{ {"SortBy", "PopularityP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
-			{ {"SortBy", "RecentP2"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
-			{ {"SortBy", "TopP2Grades"}, function() return PROFILEMAN:IsPersistentProfile(PLAYER_2) end },
-                        { {"MixTape", "Preferred"} }
-
-		}
+		AddSorts(),
 	},
 	{
 		{"", "CategoryPlaylists"},
