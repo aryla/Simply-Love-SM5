@@ -418,7 +418,7 @@ local t = Def.ActorFrame {
 			-- It's technically not possible to reach the sort menu in Casual Mode, but juuust in case let's still
 			-- include the check.
 			--
-			{ {"NextPlease", "SwitchProfile"}, ThemePrefs.Get("AllowScreenSelectProfile") },
+			{ {"NextPlease", "SwitchProfile"} },
 			{ {"WhereforeArtThou", "SongSearch"}, not GAMESTATE:IsCourseMode() and ThemePrefs.Get("KeyboardFeatures") },
 			{ {"ChangePlayMode", "Nonstop"}, not GAMESTATE:IsCourseMode() and ChangePlayModeAvailable() },
 			{ {"ChangePlayMode", "Regular"}, GAMESTATE:IsCourseMode() and ChangePlayModeAvailable() },
