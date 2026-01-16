@@ -94,5 +94,6 @@ for RowNumber=-2, 2 do
 end
 
 t[#t+1] = Grid
+t[#t+1] = LoadActor("./ScrollCursor.lua")
 
 return t
