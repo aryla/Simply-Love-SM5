@@ -445,8 +445,17 @@ local t = Def.ActorFrame {
 			},
 
 			{ {"HardTime", "PracticeMode"}, PracticeModeAvailable },
-			{ {"ChangeStyle", "Double"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "single" end },
-			{ {"ChangeStyle", "Single"}, function() return GAMESTATE:GetCurrentStyle():GetName() == "double" end },
+			-- Only allow either single or versus based on the number of players.
+			{ {"ChangeStyle", "Single"}, function()
+				return GAMESTATE:GetCurrentStyle():GetName() ~= "single" and
+				GAMESTATE:GetNumPlayersEnabled() == 1
+			end },
+			{ {"ChangeStyle", "Versus"}, function()
+				return GAMESTATE:GetCurrentStyle():GetName() ~= "versus" and
+				GAMESTATE:GetNumPlayersEnabled() == 2
+			end },
+			-- Always allow double. We'll add/remove players as needed.
+			{ {"ChangeStyle", "Double"}, function() return GAMESTATE:GetCurrentStyle():GetName() ~= "double" end },
 			{ {"FeelingSalty", "TestInput"}, GAMESTATE:IsEventMode() },
 			{ { "", "GoBack" }, PREFSMAN:GetPreference("ThreeKeyNavigation") },
 		}

@@ -83,20 +83,53 @@ local input = function(event)
 				if PREFSMAN:GetPreference("MenuTimer") then
 					overlay:playcommand("ShowPressStartForOptions")
 				end
+
 				-- We have to turn off autosetstyle to switch styles
 				if ThemePrefs.Get("PreferredStyle")=="auto" then
 					ThemePrefs.Set("PreferredStyle", "none")
 					THEME:ReloadMetrics()
 				end
+
 				-- Get the style we want to change to
 				local new_style = focus.change:lower()
+				local old_style = GAMESTATE:GetCurrentStyle():GetName()
+
 				if new_style == "all" then
 					ThemePrefs.Set("PreferredStyle", "auto")
 					THEME:ReloadMetrics()
 					new_style = #GAMESTATE:GetHumanPlayers() == 1 and "single" or "versus"
 				end
+
 				-- accommodate techno game
 				if GAMESTATE:GetCurrentGame():GetName() == "techno" then new_style = new_style .. "8" end
+
+				-- Hide the sort menu before joining players.
+				overlay:playcommand("DirectInputToEngine")
+
+				local joinedPlayers = GAMESTATE:GetNumSidesJoined()
+				local requiredPlayers = ({
+					single = 1,
+					versus = 2,
+					double = 1,
+					couple = 2,
+					routine = 2,
+				})[new_style] or 1
+
+				if joinedPlayers > requiredPlayers then
+					for _, extraPlayer in ipairs(PlayerNumber) do
+						if extraPlayer ~= event.PlayerNumber then
+							GAMESTATE:UnjoinPlayer(extraPlayer)
+						end
+					end
+				elseif joinedPlayers < requiredPlayers then
+					if old_style == 'double' then
+						-- Can't join another player in double. Change to single first.
+						GAMESTATE:SetCurrentStyle('single')
+					end
+					GAMESTATE:JoinPlayer(PLAYER_1)
+					GAMESTATE:JoinPlayer(PLAYER_2)
+				end
+
 				-- set it in the engine
 				GAMESTATE:SetCurrentStyle(new_style)
 				-- Make sure we cancel the request if it's active before trying to switch screens.
