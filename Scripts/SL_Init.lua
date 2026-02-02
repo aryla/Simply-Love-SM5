@@ -85,6 +85,7 @@ local PlayerDefaults = {
 				ColumnCues = {},
 				Hash = '',
 
+				Doublesteps = 0,
 				Crossovers = 0,
 				Footswitches = 0,
 				Sideswitches = 0,
@@ -94,6 +95,8 @@ local PlayerDefaults = {
 				-- Data for measure counter. Populated in ./ScreenGameplay in/MeasureCounterAndMods.lua.
 				-- Uses the notesThreshold option.
 				Measures = {},
+
+				TechNotation = '',
 			}
 			self.HighScores = {
 				EnteringName = false,
