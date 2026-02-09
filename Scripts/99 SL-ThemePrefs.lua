@@ -404,6 +404,12 @@ SL_CustomPrefs.Get = function()
 			Choices = { "true", "false" },
 			Values = { true, false },
 		},
+
+		AutoSetDefaultProfile = {
+			Default = true,
+			Choices = { "true", "false" },
+			Values = { true, false },
+		},
 	}
 end
 
