@@ -26,19 +26,22 @@ local t = Def.ActorFrame{
 local players =  GAMESTATE:GetHumanPlayers()
 for player in ivalues(players) do
 	local backgroundFilter = LoadActor("ScreenGameplay underlay/PerPlayer/BackgroundFilter.lua", player)
-
 	if backgroundFilter then
 		t[#t+1] = backgroundFilter..{
 			ShowCommand=function(self) self:visible(false) end,
 			PlayingCommand=function(self) self:visible(true) end
 		}
 	end
+end
 
+for player in ivalues(players) do
 	t[#t+1] = LoadActor("ScreenGameplay underlay/PerPlayer/NoteField/default.lua", player)..{
 		ShowCommand=function(self) self:visible(false) end,
 		PlayingCommand=function(self) self:visible(true) end,
 	}
+end
 
+for player in ivalues(players) do
 	t[#t+1] = Def.ActorProxy{
 		Name="NoteFieldContainer"..ToEnumShortString(player),
 		OnCommand=function(self)
