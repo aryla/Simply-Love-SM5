@@ -203,14 +203,9 @@ Branch.AfterSelectMusic = function()
 	if SCREENMAN:GetTopScreen():GetGoToOptions() then
 		return "ScreenPlayerOptions"
 	else
-		-- routine mode specifically uses ScreenGameplayShared
-		local style = GAMESTATE:GetCurrentStyle():GetName()
-		if style == "routine" then
-			return "ScreenGameplayShared"
-		end
-
-		-- while everything else (single, versus, double, etc.) uses ScreenGameplay
-		return "ScreenGameplay"
+		-- Either ScreenGameplayShared (for routine) or ScreenGameplayShared
+		-- (for single, versus, double, etc)
+		return Branch.GameplayScreen()
 	end
 end
 

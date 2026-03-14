@@ -14,7 +14,7 @@ local RestartHandler = function(event)
 			holdingCtrl = true
 		elseif event.DeviceInput.button == "DeviceButton_r" then
 			if holdingCtrl then
-				SCREENMAN:GetTopScreen():SetPrevScreenName("ScreenGameplay"):SetNextScreenName("ScreenGameplay"):begin_backing_out()
+				SCREENMAN:GetTopScreen():SetPrevScreenName(Branch.GameplayScreen()):SetNextScreenName(Branch.GameplayScreen()):begin_backing_out()
 			end
 		end
 	elseif event.type == "InputEventType_Release" then
