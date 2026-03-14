@@ -416,8 +416,9 @@ local t = Def.ActorFrame {
 				return GAMESTATE:GetCurrentStyle():GetName() ~= "versus" and
 					GAMESTATE:GetNumPlayersEnabled() == 2
 			end },
-			-- Always allow double. We'll add/remove players as needed.
+			-- Always allow double and routine. We'll add/remove players as needed.
 			{ {"ChangeStyle", "Double"}, function() return GAMESTATE:GetCurrentStyle():GetName() ~= "double" end },
+			{ {"ChangeStyle", "Routine"}, function() return GAMESTATE:GetCurrentStyle():GetName() ~= "routine" end },
 			{ {"FeelingSalty", "TestInput"}, GAMESTATE:IsEventMode() },
 			{ { "", "GoBack" }, PREFSMAN:GetPreference("ThreeKeyNavigation") },
 		}
