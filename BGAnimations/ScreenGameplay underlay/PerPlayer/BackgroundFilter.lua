@@ -2,6 +2,9 @@ local player = ...
 local pn = ToEnumShortString(player)
 local mods = SL[pn].ActiveModifiers
 
+local isRoutine = GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides"
+if isRoutine and player ~= PLAYER_1 then return end
+
 -- if no BackgroundFilter is necessary, it's safe to bail now
 if mods.BackgroundFilter == "Off" then return end
 
