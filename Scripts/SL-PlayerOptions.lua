@@ -973,6 +973,8 @@ local OptionRowDefault = {
 			self.OneChoiceForAllPlayers = Overrides[name].OneChoiceForAllPlayers or false
 			if IsRoutine() then
 				local list = {
+					"SpeedModType",
+					"SpeedMod",
 					"NoteSkin",
 					"NoteSkinVariant",
 					"JudgmentGraphic",

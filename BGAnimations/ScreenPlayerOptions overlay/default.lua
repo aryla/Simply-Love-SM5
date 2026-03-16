@@ -60,18 +60,6 @@ end
 local CalculateScrollSpeed = function(player)
 	player   = player or GAMESTATE:GetMasterPlayerNumber()
 	local pn = ToEnumShortString(player)
-	local ScreenOptions = SCREENMAN:GetTopScreen()
-	local SpeedModRowIndex = FindOptionRowIndex(ScreenOptions,"Mini")
-	local mini = 0
-	if SpeedModRowIndex then
-		-- The BitmapText actors for P1 and P2 speedmod are both named "Item", so we need to provide a 1 or 2 to index
-		if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-			miniText = ScreenOptions:GetOptionRow(SpeedModRowIndex):GetChild(""):GetChild("Item"):GetText()
-		else
-			miniText = ScreenOptions:GetOptionRow(SpeedModRowIndex):GetChild(""):GetChild("Item")[ PlayerNumber:Reverse()[player]+1 ]:GetText()
-		end
-		mini = tonumber(miniText:sub(1, -2)) / 100
-	end
 	local StepsOrTrail = (GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player)) or GAMESTATE:GetCurrentSteps(player)
 	local MusicRate    = SL.Global.ActiveModifiers.MusicRate or 1
 
@@ -120,11 +108,6 @@ local ChangeSpeedMod = function(pn, direction)
 	speedmod = increment * math.floor(speedmod/increment + 0.5)
 
 	mods.SpeedMod = speedmod
-	if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-		local otherPn = pn == "P1" and "P2" or "P1"
-		SL[otherPn].ActiveModifiers.SpeedMod     = SL[pn].ActiveModifiers.SpeedMod
-		SL[otherPn].ActiveModifiers.SpeedModType = SL[pn].ActiveModifiers.SpeedModType
-	end
 end
 
 local ChangeVariant = function(pn, direction)
@@ -172,16 +155,10 @@ local t = Def.ActorFrame{
 
 			local SpeedModRowIndex = FindOptionRowIndex(ScreenOptions,"SpeedMod")
 			local VariantRowIndex = FindOptionRowIndex(ScreenOptions,"NoteSkinVariant")
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				if player == GAMESTATE:GetMasterPlayerNumber() then
-					SpeedModBMTs[pn] = ScreenOptions:GetOptionRow(SpeedModRowIndex):GetChild(""):GetChild("Item")
-				end
-			else
-				if SpeedModRowIndex then
-					-- The BitmapText actors for P1 and P2 speedmod are both named "Item", so we need to provide a 1 or 2 to index
-					SpeedModBMTs[pn] = ScreenOptions:GetOptionRow(SpeedModRowIndex):GetChild(""):GetChild("Item")[ PlayerNumber:Reverse()[player]+1 ]
-					self:playcommand("Set"..pn)
-				end
+			if SpeedModRowIndex then
+				-- The BitmapText actors for P1 and P2 speedmod are both named "Item", so we need to provide a 1 or 2 to index
+				SpeedModBMTs[pn] = ScreenOptions:GetOptionRow(SpeedModRowIndex):GetChild(""):GetChild("Item")[ PlayerNumber:Reverse()[player]+1 ]
+				self:playcommand("Set"..pn)
 			end
 			if VariantRowIndex then
 				-- The BitmapText actors for P1 and P2 variant are both named "Item", so we need to provide a 1 or 2 to index
@@ -269,12 +246,7 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 		["SpeedModType" .. pn .. "SetMessageCommand"]=function(self,params)
 			local pn = pn
 			local player = player
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				pn = ToEnumShortString(GAMESTATE:GetMasterPlayerNumber())
-				player = GAMESTATE:GetMasterPlayerNumber()
-			else
-				if params.Player ~= player  then return end
-			end
+			if params.Player ~= player  then return end
 
 			local oldtype = SL[pn].ActiveModifiers.SpeedModType
 			local newtype = params.SpeedModType
@@ -303,11 +275,6 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 			SL[pn].ActiveModifiers.SpeedMod     = speedmod
 			SL[pn].ActiveModifiers.SpeedModType = newtype
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				local otherPn = pn == "P1" and "P2" or "P1"
-				SL[otherPn].ActiveModifiers.SpeedMod     = SL[pn].ActiveModifiers.SpeedMod
-				SL[otherPn].ActiveModifiers.SpeedModType = SL[pn].ActiveModifiers.SpeedModType
-			end
 			self:queuecommand("Set" .. pn)
 		end,
 
@@ -324,12 +291,7 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 				text = "M" .. tostring(SL[pn].ActiveModifiers.SpeedMod)
 			end
 
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				local otherPn = pn == "P1" and "P2" or "P1"
-				SpeedModBMTs[ToEnumShortString(GAMESTATE:GetMasterPlayerNumber())]:settext( text )
-			else
-				SpeedModBMTs[pn]:settext( text )
-			end
+			SpeedModBMTs[pn]:settext( text )
 			self:GetParent():queuecommand("Refresh")
 		end,
 		["Set" .. pn .. "VariantCommand"]=function(self)
@@ -344,10 +306,6 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 		["CurrentTrail" .. pn .. "ChangedMessageCommand"]=function(self) self:queuecommand("Set"..pn) end,
 
 		["MenuLeft" .. pn .. "MessageCommand"]=function(self)
-			local pn = pn
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				pn = ToEnumShortString(GAMESTATE:GetMasterPlayerNumber())
-			end
 			local topscreen = SCREENMAN:GetTopScreen()
 			local row_index = topscreen:GetCurrentRowIndex(player)
 
@@ -365,10 +323,6 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end
 		end,
 		["MenuRight" .. pn .. "MessageCommand"]=function(self)
-			local pn = pn
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				pn = ToEnumShortString(GAMESTATE:GetMasterPlayerNumber())
-			end
 			local topscreen = SCREENMAN:GetTopScreen()
 			local row_index = topscreen:GetCurrentRowIndex(player)
 
@@ -394,13 +348,6 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
 			self:diffuse(PlayerColor(player)):diffusealpha(0)
 			self:zoom(0.5):y(48)
 			self:x(player==PLAYER_1 and WideScale(-77, -100) or WideScale(140,154))
-			-- If we're in TwoPlayersSharedSides, center the text
-			if GAMESTATE:GetCurrentStyle():GetStyleType() == "StyleType_TwoPlayersSharedSides" then
-				self:x(WideScale(-77, -100) + WideScale(140,154)) :halign(0.65)
-				if pn ~= ToEnumShortString(GAMESTATE:GetMasterPlayerNumber()) then
-					self:visible(false)
-				end
-			end
 			self:shadowlength(0.55)
 		end,
 		OnCommand=function(self) self:linear(0.4):diffusealpha(1) end,
