@@ -434,6 +434,12 @@ local NewSessionRequestProcessor = function(res, gsInfo)
 	DiffuseEmojis(service1:ClearAttributes())
 	DiffuseEmojis(service2:ClearAttributes())
 	DiffuseEmojis(service3:ClearAttributes())
+
+	if SCREENMAN:GetTopScreen() and SCREENMAN:GetTopScreen():GetName() == "ScreenSelectMusic" then
+		-- On ScreenSelectMusic, hide the status text after a while
+		-- since it would be confusing if we disconnect afterwards.
+		groovestats:diffusealpha(1):sleep(6):linear(0.4):diffusealpha(0)
+	end
 end
 
 local function DiffuseText(bmt)
@@ -458,7 +464,15 @@ t[#t+1] = Def.ActorFrame{
 	end,
 	ScreenChangedMessageCommand=function(self)
 		local screen = SCREENMAN:GetTopScreen()
+
+		local shouldReconnectGs = false
 		if screen:GetName() == "ScreenTitleMenu" or screen:GetName() == "ScreenTitleJoin" then
+			shouldReconnectGs = true
+		elseif screen:GetName() == "ScreenSelectMusic" and not SL.GrooveStats.IsConnected then
+			shouldReconnectGs = true
+		end
+
+		if shouldReconnectGs then
 			self:queuecommand("Reset")
 			self:diffusealpha(0):sleep(0.2):linear(0.4):diffusealpha(1):visible(true)
 			self:queuecommand("SendRequest")

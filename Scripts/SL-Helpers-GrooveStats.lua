@@ -108,6 +108,7 @@ RequestResponseActor = function(x, y)
 							body = JsonDecode(response.body)
 						end
 						if (code >= 400 and code < 499 and code ~= 429) or (code == 200 and body and body.error and #body.error) then
+							lua.Info("GS request failed: "..code.." "..response.body)
 							SL.GrooveStats.IsConnected = false
 						end
 					end
