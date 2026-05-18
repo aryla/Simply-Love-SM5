@@ -193,7 +193,7 @@ t[#t+1] = LoadFont("Common Footer")..{
 		end
 
 		if PREFSMAN:GetPreference("EventMode") then
-			self:settext( THEME:GetString("ScreenSystemLayer", "EventMode") )
+			self:settext('')
 
 		elseif GAMESTATE:GetCoinMode() == "CoinMode_Pay" then
 			local credits = GetCredits()
