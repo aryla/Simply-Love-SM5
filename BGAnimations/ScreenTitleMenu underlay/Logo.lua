@@ -37,7 +37,10 @@ af[#af+1] = Def.Sprite{
 			local style = ThemePrefs.Get("VisualStyle")
 			local image = THEME:GetPathG("", "_VisualStyles/"..style.."/TitleMenu (doubleres).png")
 			local imageAlt = "/Themes/"..THEME:GetCurThemeName().."/Graphics/_VisualStyles/"..style.."/TitleMenuAlt (doubleres).png"
-			if FILEMAN:DoesFileExist(imageAlt) and math.random(1,100) <= 10 then
+			local logo = ThemePrefs.Get("TitleLogo")
+			if logo ~= "default" then
+				self:Load(THEME:GetPathG("", "_TitleLogo/"..logo.." (doubleres).png"))
+			elseif FILEMAN:DoesFileExist(imageAlt) and math.random(1,100) <= 10 then
 				self:Load(imageAlt)
 			else
 				self:Load(image)
