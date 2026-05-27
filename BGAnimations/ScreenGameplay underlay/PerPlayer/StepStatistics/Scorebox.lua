@@ -216,7 +216,20 @@ local LeaderboardRequestProcessor = function(res, master)
 				end
 			end
 		end
- 	end
+	end
+
+	if not (data and data[playerStr]) then
+		cur_style = 0
+	elseif data[playerStr]["itl"] then
+		cur_style = 3
+	elseif data[playerStr]["rpg"] then
+		cur_style = 2
+	elseif SL["P"..n].ActiveModifiers.ShowExScore then
+		cur_style = 1
+	else
+		cur_style = 0
+	end
+
 	master:queuecommand("CheckScorebox")
 end
 
@@ -244,7 +257,7 @@ local af = Def.ActorFrame{
 		self:queuecommand("LoopScorebox")
 	end,
 	LoopScoreboxCommand=function(self)
-		if #all_data == 0 then return end
+		if true then return end
 
 		local start = cur_style
 
@@ -350,7 +363,8 @@ local af = Def.ActorFrame{
 		Font="Common Normal",
 		Text="EX",
 		InitCommand=function(self)
-			self:diffusealpha(0.3):x(2):y(-5)
+			self:diffusealpha(SL["P"..n].ActiveModifiers.ShowExScore and 0.3 or 0)
+			self:x(2):y(-5)
 		end,
 		LoopScoreboxCommand=function(self)
 			if cur_style == 1 then
