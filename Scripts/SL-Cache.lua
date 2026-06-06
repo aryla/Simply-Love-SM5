@@ -5,7 +5,9 @@ local function Cache_DBG(message)
 end
 
 local function CacheInitialize()
+	if not sqlite3 then return end
 	local db = sqlite3.open("simplylove.db")
+	if not db then return end
 	db:exec("CREATE TABLE meta (schema_version INTEGER PRIMARY KEY);")
 
 	db:exec([[
@@ -30,6 +32,9 @@ local function CacheInitialize()
 end
 
 local Db = CacheInitialize()
+if not Db then
+	lua.Warn("Initializing SL cache failed")
+end
 
 ---@param player string
 ---@param hash string
@@ -38,6 +43,8 @@ local Db = CacheInitialize()
 ---@param score_source string
 ---@param score_color string?
 local function CacheSet(player, hash, score, score_type, score_source, score_color)
+	if not Db then return end
+
 	Cache_DBG(string.format("CacheSet %s %s %s %s %s %s", player, hash, score, score_type, score_source, score_color or "nil"))
 	local stmt = Db:prepare("INSERT INTO score_cache(player, hash, score, score_type, score_source, score_color) VALUES (?, ?, ?, ?, ?, ?)")
 	stmt:bind_values(player, hash, score, score_type, score_source, score_color)
@@ -51,6 +58,8 @@ end
 ---@param score_source string
 ---@return string?, string?
 local function CacheGet(player, hash, score_type, score_source)
+	if not Db then return nil, nil end
+
 	Cache_DBG(string.format("CacheGet %s %s %s %s", player, hash, score_type, score_source))
 	local stmt = Db:prepare("SELECT score, score_color FROM score_cache WHERE player=? AND hash=? AND score_type=? AND score_source=?")
 	stmt:bind_values(player, hash, score_type, score_source)
