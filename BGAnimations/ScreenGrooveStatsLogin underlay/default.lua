@@ -58,9 +58,11 @@ local InputHandler = function(event)
 
 	if event.type == "InputEventType_FirstPress" then
 		if event.GameButton == "Back" then
+			SCREENMAN:PlayStartSound()
 			SCREENMAN:GetTopScreen():Cancel()
 
 		elseif event.GameButton == "Start" then
+			SCREENMAN:PlayStartSound()
 			SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_GoToNextScreen")
 		end
 	end
@@ -164,4 +166,11 @@ for player in ivalues(GAMESTATE:GetHumanPlayers()) do
   af[#af+1] = childAf
 end
 
-return af
+return Def.ActorFrame{
+	Def.Quad {
+		InitCommand=function(self)
+			self:FullScreen():diffuse(Color.Black):diffusealpha(0.8)
+		end
+	},
+	af
+}

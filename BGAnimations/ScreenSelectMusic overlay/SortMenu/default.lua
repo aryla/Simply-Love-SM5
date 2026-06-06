@@ -430,6 +430,7 @@ local t = Def.ActorFrame {
 				{"", "CategoryAdvanced"},
 				{
 					{ {"GrooveStats", "Leaderboard"}, function() return GAMESTATE:GetCurrentSong() ~= nil end },
+					{ {"GrooveStats", "GrooveStatsLogin"} },
 					-- Loading songs doesn't work from course mode because it invalidates autogen courses,
 					-- which could delete the currently selected course.
 					{ {"TakeABreather", "LoadNewSongs"}, not GAMESTATE:IsCourseMode() },
@@ -536,6 +537,11 @@ local t = Def.ActorFrame {
 
 		-- Then add the ScreenSelectProfile on top.
 		SCREENMAN:AddNewScreenToTop("ScreenSelectProfile")
+	end,
+
+	DirectInputToEngineForGrooveStatsLoginCommand=function(self)
+		DirectInputToEngine(self)
+		SCREENMAN:AddNewScreenToTop("ScreenGrooveStatsLogin")
 	end,
 
 	AssessAvailableChoicesCommand=function(self)

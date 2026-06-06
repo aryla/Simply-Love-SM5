@@ -187,6 +187,16 @@ local input = function(event)
 					PROFILEMAN:SaveMachineProfile()
 
 					overlay:queuecommand("DirectInputToEngineForSelectProfile")
+
+				elseif focus.new_overlay == "GrooveStatsLogin" then
+					if MEMCARDMAN:GetCardState(PLAYER_1) ~= 'MemoryCardState_none' or
+						MEMCARDMAN:GetCardState(PLAYER_2) ~= 'MemoryCardState_none' then
+						SCREENMAN:GetTopScreen():GetMusicWheel():SetOpenSection("");
+					end
+					GAMESTATE:SaveProfiles()
+					PROFILEMAN:SaveMachineProfile()
+					overlay:queuecommand("DirectInputToEngineForGrooveStatsLogin")
+
 				elseif focus.new_overlay == "AddFavorite" then
 					addOrRemoveFavorite(event.PlayerNumber)
 					-- Nudge the wheel a bit so that that the icon is correctly updated.
