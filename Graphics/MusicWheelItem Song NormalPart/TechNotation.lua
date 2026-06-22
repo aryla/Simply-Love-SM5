@@ -37,6 +37,10 @@ local af = Def.BitmapText {
 			return
 		end
 
+		if not GAMESTATE:IsHumanPlayer(pn) then
+			return
+		end
+
 		-- TODO: is there a better way of laying this out?
 		local x_offset = 10
 		local musicWheelScoreYes = SLMusicWheelScoreEnabled() and (PlayerMusicWheelScore(PLAYER_1) == PlayerMusicWheelScore_Yes or PlayerMusicWheelScore(PLAYER_2) == PlayerMusicWheelScore_Yes)
