@@ -209,7 +209,6 @@ end
 local function ChangePlayModeAvailable()
 	local onlineHandler = GetOnlineHandlerInstance()
 	return GAMESTATE:IsEventMode() and
-		ThemePrefs.Get("AllowScreenSelectPlayMode2") and
 		not (onlineHandler and onlineHandler.connected)
 end
 
