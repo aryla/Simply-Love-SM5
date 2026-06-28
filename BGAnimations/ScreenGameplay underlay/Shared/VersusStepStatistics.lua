@@ -4,8 +4,11 @@ local FilterAlpha = BackgroundFilterValues()
 
 local ShouldDisplayStatsForPlayer = function(player)
     local pn = ToEnumShortString(player)
-    return (SL[pn].ActiveModifiers.DataVisualizations == "Step Statistics" or
-            ThemePrefs.Get("EnableTournamentMode") and ThemePrefs.Get("StepStats") == "Show")
+    local mods = SL[pn].ActiveModifiers
+    local steps = mods.DataVisualizations == "Step Statistics" or ThemePrefs.Get("EnableTournamentMode") and ThemePrefs.Get("StepStats") == "Show"
+    local score = mods.NPSGraphAtTop or mods.ScoreAlternatePosition or ThemePrefs.Get("EnableTournamentMode")
+    local any = steps or score
+    return any, steps, score
 end
 
 local ShouldDisplayStats = function()
@@ -59,71 +62,43 @@ if ShouldDisplayStats() then
 end
 
 for player in ivalues(Players) do
-    if ShouldDisplayStatsForPlayer(player) and #Players > 1 then
-        -- No need to reimplement the wheel here. Just use the existing actor and modify it for our use case.
-        local judgments = LoadActor("../PerPlayer/StepStatistics/TapNoteJudgments.lua", {player, false})
-        judgments.InitCommand = function(self)    
-            local StepsOrTrail = (GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player)) or GAMESTATE:GetCurrentSteps(player)
-            local total_tapnotes = StepsOrTrail:GetRadarValues(player):GetValue( "RadarCategory_Notes" )
-    
-            -- determine how many digits are needed to express the number of notes in base-10
-            local digits = (math.floor(math.log10(total_tapnotes)) + 1)
-            -- display a minimum 4 digits for aesthetic reasons
-            digits = math.max(4, digits)
+    local any, steps, score = ShouldDisplayStatsForPlayer(player)
+    if any and #Players > 1 then
+        if steps then
+            -- No need to reimplement the wheel here. Just use the existing actor and modify it for our use case.
+            local judgments = LoadActor("../PerPlayer/StepStatistics/TapNoteJudgments.lua", {player, false})
+            judgments.InitCommand = function(self)    
+                local StepsOrTrail = (GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player)) or GAMESTATE:GetCurrentSteps(player)
+                local total_tapnotes = StepsOrTrail:GetRadarValues(player):GetValue( "RadarCategory_Notes" )
 
-            self:zoom(0.8)
-            self:y(100)
-            self:x(65 * (player==PLAYER_1 and -1 or 1) + 1)
+                -- determine how many digits are needed to express the number of notes in base-10
+                local digits = (math.floor(math.log10(total_tapnotes)) + 1)
+                -- display a minimum 4 digits for aesthetic reasons
+                digits = math.max(4, digits)
 
-            if digits > 4 then
-                -- This works okay enough for 5 and 6 digits.
-                self:zoomx(self:GetZoomX() - 0.12 * (digits-4))
+                self:zoom(0.8)
+                self:y(100)
+                self:x(65 * (player==PLAYER_1 and -1 or 1) + 1)
+
+                if digits > 4 then
+                    -- This works okay enough for 5 and 6 digits.
+                    self:zoomx(self:GetZoomX() - 0.12 * (digits-4))
+                end
             end
+            af[#af+1] = judgments
         end
 
-        af[#af+1] = judgments
-
-        -- Add a score to Step Stats if it's hidden by the NPS graph or we're in Tournament Mode.
-        if SL[ToEnumShortString(player)].ActiveModifiers.NPSGraphAtTop or ThemePrefs.Get("EnableTournamentMode") then
-            local pn = ToEnumShortString(player)
-            local IsEX = SL[pn].ActiveModifiers.ShowExScore
-
-            af[#af+1] = LoadFont("Wendy/_wendy monospace numbers")..{
-                Text="0.00",
-                InitCommand=function(self)
-                    self:valign(1):horizalign(right)
+        -- Add a score to Step Stats if it's hidden by the NPS graph, alternate position or we're in Tournament Mode.
+        if score then
+            af[#af+1] = GameplayScoreBase(player) .. {
+                InitCommand = function(self)
                     self:zoom(0.25)
                     if player == PLAYER_1 then
                         self:xy(-7, -150)
                     else
                         self:xy(65, -150)
                     end
-
-                    if IsEX then
-                        -- If EX Score, let's diffuse it to be the same as th ITG top window.
-                        -- This will make it consistent with the EX Score Pane.
-                        self:diffuse(SL.JudgmentColors["ITG"][1])
-                    end
-                end,
-                JudgmentMessageCommand=function(self, params)
-                    if params.Player ~= player then return end
-                    self:queuecommand("RedrawScore")
-                end,
-                RedrawScoreCommand=function(self)
-                    if not IsEX then
-                        local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-                        local dance_points = pss:GetPercentDancePoints()
-                        local percent = FormatPercentScore( dance_points ):sub(1,-2)
-                        self:settext(percent)
-                    end
-                end,
-                ExCountsChangedMessageCommand=function(self, params)
-                    if params.Player ~= player then return end
-            
-                    if IsEX then
-                        self:settext(("%.02f"):format(params.ExScore))
-                    end
-                end,
+                end
             }
         end
     end

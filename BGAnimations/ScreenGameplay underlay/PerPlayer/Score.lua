@@ -4,7 +4,6 @@ local pn = ToEnumShortString(player)
 local mods = SL[pn].ActiveModifiers
 local IsUltraWide = (GetScreenAspectRatio() > 21/9)
 local NumPlayers = #GAMESTATE:GetHumanPlayers()
-local IsEX = SL[pn].ActiveModifiers.ShowExScore
 
 -- -----------------------------------------------------------------------
 -- first, check for conditions where we might not draw the score actor at all
@@ -12,7 +11,7 @@ local IsEX = SL[pn].ActiveModifiers.ShowExScore
 if mods.HideScore then return end
 
 if NumPlayers > 1
-and mods.NPSGraphAtTop
+and (mods.NPSGraphAtTop or mods.ScoreAlternatePosition)
 and not IsUltraWide
 then
 	return
@@ -30,12 +29,6 @@ local pos = {
 	[PLAYER_2] = { x=(_screen.cx + clamp(_screen.w, 640, 854)/2.75), y=56 },
 }
 
-local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
-
-if styletype == "TwoPlayersSharedSides" then
-	pss = STATSMAN:GetCurStageStats():GetRoutineStageStats()
-end
-
 local StepsOrTrail = (GAMESTATE:IsCourseMode() and GAMESTATE:GetCurrentTrail(player)) or GAMESTATE:GetCurrentSteps(player)
 local total_tapnotes = StepsOrTrail:GetRadarValues(player):GetValue( "RadarCategory_Notes" )
 
@@ -47,12 +40,6 @@ local digits = (math.floor(math.log10(total_tapnotes)) + 1)
 digits = clamp(math.max(4, digits) - 4, 0, 3)
 
 local NoteFieldIsCentered = (GetNotefieldX(player) == _screen.cx)
-
-local ar_scale = {
-	sixteen_ten  = 0.825,
-	sixteen_nine = 1
-}
-local zoom_factor = clamp(scale(GetScreenAspectRatio(), 16/10, 16/9, ar_scale.sixteen_ten, ar_scale.sixteen_nine), 0, 1.125)
 
 -- -----------------------------------------------------------------------
 local function MakePercentScore(actual, possible)
@@ -82,20 +69,12 @@ local function MakePercentScore(actual, possible)
     return percent
 end
 
-return LoadFont("Wendy/_wendy monospace numbers")..{
-	Text="0.00",
-	Name=pn.."Score",
-	InitCommand=function(self)
-		self:valign(1):horizalign(right)
+return GameplayScoreBase(player) .. {
+	Name = pn.."Score",
+	InitCommand = function(self)
 		self:zoom(0.5)
-		if IsEX then
-			-- If EX Score, let's diffuse it to be the same as the ITG top window.
-			-- This will make it consistent with the EX Score Pane.
-			self:diffuse(SL.JudgmentColors["ITG"][1])
-		end
 	end,
-
-	BeginCommand=function(self)
+	BeginCommand = function(self)
 		-----------------------------------------------------------------
 		-- ultrawide with both players joined is really its own layout
 		-- hardcode some numbers for now, return early, and call it a day
@@ -115,8 +94,8 @@ return LoadFont("Wendy/_wendy monospace numbers")..{
 		-- assume "normal" score positioning first, but there are many reasons it will need to be moved
 		self:xy( pos[player].x, pos[player].y )
 
-		if mods.NPSGraphAtTop and styletype ~= "OnePlayerTwoSides" then
-			-- if NPSGraphAtTop and Step Statistics and not double,
+		if (mods.NPSGraphAtTop or mods.ScoreAlternatePosition) and styletype ~= "OnePlayerTwoSides" then
+			-- if NPSGraphAtTop or alternate position, and Step Statistics and not double,
 			-- move the score down into the stepstats pane under
 			-- the judgment breakdown
 			if mods.DataVisualizations=="Step Statistics" then
@@ -145,7 +124,7 @@ return LoadFont("Wendy/_wendy monospace numbers")..{
 					self:y( 282 )
 				end
 
-			-- if NPSGraphAtTop but not Step Statistics
+			-- if NPSGraphAtTop or alternate position but not Step Statistics
 			else
 				-- if not Center1Player, move the score right or left
 				-- within the normal gameplay header to where the
@@ -157,44 +136,5 @@ return LoadFont("Wendy/_wendy monospace numbers")..{
 				-- if NoteFieldIsCentered, no need to move the score
 			end
 		end
-	end,
-	JudgmentMessageCommand=function(self)
-		self:queuecommand("RedrawScore")
-	end,
-	RedrawScoreCommand=function(self)
-		if not IsEX then
-			local dance_points
-			if mods.RunningScoring then
-				local current_possible_points = pss:GetCurrentPossibleDancePoints()
-				if current_possible_points == 0 then
-					dance_points = 0
-				else
-					dance_points = pss:GetActualDancePoints() / pss:GetCurrentPossibleDancePoints()
-				end
-			else
-				dance_points = pss:GetPercentDancePoints()
-			end
-			local percent = FormatPercentScore( dance_points ):sub(1,-2)
-			self:settext(percent)
-		end
-	end,
-	ExCountsChangedMessageCommand=function(self, params)
-		if params.Player ~= player then return end
-
-		if IsEX then
-			local score
-			if mods.RunningScoring then
-				local _, current_possible_points = GetPossibleExScore(player, params.ExCounts)
-				if current_possible_points == 0 then
-					score = 0
-				else
-					score = FormatTwoDecimalScore(params.ActualPoints, current_possible_points)
-				end
-			else
-				score = params.ExScore
-			end
-
-			self:settext(("%.02f"):format(score))
-		end
-	end,
+	end
 }

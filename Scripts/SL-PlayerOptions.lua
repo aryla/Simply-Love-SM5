@@ -583,7 +583,7 @@ local Overrides = {
 		Values = function()
 			local vals = {}
 			if IsUsingWideScreen() then
-				vals = { "JudgmentTilt", "ColumnCues", "RunningScoring" }
+				vals = { "JudgmentTilt", "ColumnCues", "RunningScoring", "ScoreAlternatePosition" }
 				if IsServiceAllowed(SL.GrooveStats.GetScores) then
 					vals[#vals+1] = "DisplayScorebox"
 				end
@@ -598,8 +598,11 @@ local Overrides = {
 		SelectType = "SelectMultiple",
 		Values = function()
 			local vals = {}
-			if not IsUsingWideScreen() and IsServiceAllowed(SL.GrooveStats.GetScores) then
-				vals = { "DisplayScorebox" }
+			if not IsUsingWideScreen() then
+				vals[#vals+1] = "ScoreAlternatePosition"
+				if IsServiceAllowed(SL.GrooveStats.GetScores) then
+					vals[#vals+1] = "DisplayScorebox"
+				end
 			end
 			return vals
 		end

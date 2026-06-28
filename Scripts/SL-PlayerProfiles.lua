@@ -81,6 +81,7 @@ local permitted_profile_settings = {
 
 	PlayerMusicWheelScore = "string",
 	RunningScoring = "boolean",
+	ScoreAlternatePosition = "boolean",
 
 	----------------------------------
 	-- Profile Settings without OptionRows

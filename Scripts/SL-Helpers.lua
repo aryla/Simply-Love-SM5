@@ -1154,3 +1154,65 @@ GetPossibleExScore = function(player, counts)
 	local possible_ex_score, possible_total = CalculateExScore(player, best_counts)
 	return possible_ex_score, possible_total
 end
+
+GameplayScoreBase = function(player)
+	local pn = ToEnumShortString(player)
+	local mods = SL[pn].ActiveModifiers
+	local IsEX = mods.ShowExScore
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats(player)
+	
+	local styletype = ToEnumShortString(GAMESTATE:GetCurrentStyle():GetStyleType())
+	if styletype == "TwoPlayersSharedSides" then
+		pss = STATSMAN:GetCurStageStats():GetRoutineStageStats()
+	end
+
+	return LoadFont("Wendy/_wendy monospace numbers")..{
+		Text="0.00",
+		InitCommand=function(self)
+			self:valign(1):horizalign(right)
+			if IsEX then
+				-- If EX Score, let's diffuse it to be the same as the ITG top window.
+				-- This will make it consistent with the EX Score Pane.
+				self:diffuse(SL.JudgmentColors["ITG"][1])
+			end
+		end,
+		JudgmentMessageCommand=function(self, params)
+			if params.Player ~= player then return end
+			self:queuecommand("RedrawScore")
+		end,
+		RedrawScoreCommand=function(self)
+			if IsEX then return end
+
+			local dance_points
+			if mods.RunningScoring then
+				local current_possible_points = pss:GetCurrentPossibleDancePoints()
+				if current_possible_points == 0 then
+					dance_points = 0
+				else
+					dance_points = pss:GetActualDancePoints() / pss:GetCurrentPossibleDancePoints()
+				end
+			else
+				dance_points = pss:GetPercentDancePoints()
+			end
+			local percent = FormatPercentScore( dance_points ):sub(1,-2)
+			self:settext(percent)
+		end,
+		ExCountsChangedMessageCommand=function(self, params)
+			if params.Player ~= player or not IsEX then return end
+
+			local score
+			if mods.RunningScoring then
+				local _, current_possible_points = GetPossibleExScore(player, params.ExCounts)
+				if current_possible_points == 0 then
+					score = 0
+				else
+					score = FormatTwoDecimalScore(params.ActualPoints, current_possible_points)
+				end
+			else
+				score = params.ExScore
+			end
+
+			self:settext(("%.02f"):format(score))
+		end
+	}
+end
