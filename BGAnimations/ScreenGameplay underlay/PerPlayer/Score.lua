@@ -163,7 +163,17 @@ return LoadFont("Wendy/_wendy monospace numbers")..{
 	end,
 	RedrawScoreCommand=function(self)
 		if not IsEX then
-			local dance_points = pss:GetPercentDancePoints()
+			local dance_points
+			if mods.RunningScoring then
+				local current_possible_points = pss:GetCurrentPossibleDancePoints()
+				if current_possible_points == 0 then
+					dance_points = 0
+				else
+					dance_points = pss:GetActualDancePoints() / pss:GetCurrentPossibleDancePoints()
+				end
+			else
+				dance_points = pss:GetPercentDancePoints()
+			end
 			local percent = FormatPercentScore( dance_points ):sub(1,-2)
 			self:settext(percent)
 		end
@@ -172,7 +182,19 @@ return LoadFont("Wendy/_wendy monospace numbers")..{
 		if params.Player ~= player then return end
 
 		if IsEX then
-			self:settext(("%.02f"):format(params.ExScore))
+			local score
+			if mods.RunningScoring then
+				local _, current_possible_points = GetPossibleExScore(player, params.ExCounts)
+				if current_possible_points == 0 then
+					score = 0
+				else
+					score = FormatTwoDecimalScore(params.ActualPoints, current_possible_points)
+				end
+			else
+				score = params.ExScore
+			end
+
+			self:settext(("%.02f"):format(score))
 		end
 	end,
 }

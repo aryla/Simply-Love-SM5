@@ -780,7 +780,11 @@ CalculateExScoreNoGlobalState = function(StepsOrTrail, player, po_NoMines, ex_co
 		end
 	end
 
-	return math.max(0, math.floor(total_points/total_possible * 10000) / 100), total_points, total_possible
+	return FormatTwoDecimalScore(total_points, total_possible), total_points, total_possible
+end
+
+FormatTwoDecimalScore = function(actual, possible)
+	return math.max(0, math.floor(actual/possible * 10000) / 100)
 end
 
 -- -----------------------------------------------------------------------
@@ -1117,4 +1121,36 @@ TotalCourseLengthPlayed = function(player)
 	else
 		return -1
 	end
+end
+
+-- Calculate what the possible_ex_score and possible_total (points) would be if all judges were perfect.
+-- possible_total is a somewhat misleading name as it's really the possible points from the provided counts
+GetPossibleExScore = function(player, counts)
+	local best_counts = {}
+
+	local keys = { "W0", "W1", "W2", "W3", "W4", "W5", "Miss", "Held", "LetGo", "HitMine" }
+
+	for key in ivalues(keys) do
+		local value = counts[key]
+		if value ~= nil then
+			-- Initialize the keys	
+			if best_counts[key] == nil then
+				best_counts[key] = 0
+			end
+
+			-- Upgrade dropped holds/rolls to held.
+			if key == "LetGo" or key == "Held" then
+				best_counts["Held"] = best_counts["Held"] + value
+			-- We never hit any mines.
+			elseif key == "HitMine" then
+				best_counts[key] = 0
+			-- Upgrade to FA+ window.
+			else
+				best_counts["W0"] = best_counts["W0"] + value
+			end
+		end
+	end
+
+	local possible_ex_score, possible_total = CalculateExScore(player, best_counts)
+	return possible_ex_score, possible_total
 end

@@ -40,38 +40,6 @@ else
 	font = "_Combo Fonts/" .. font .. "/"
 end
 
--- -----------------------------------------------------------------------
-local GetPossibleExScore = function(counts)
-	local best_counts = {}
-	
-	local keys = { "W0", "W1", "W2", "W3", "W4", "W5", "Miss", "Held", "LetGo", "HitMine" }
-
-	for key in ivalues(keys) do
-		local value = counts[key]
-		if value ~= nil then
-			-- Initialize the keys	
-			if best_counts[key] == nil then
-				best_counts[key] = 0
-			end
-
-			-- Upgrade dropped holds/rolls to held.
-			if key == "LetGo" or key == "Held" then
-				best_counts["Held"] = best_counts["Held"] + value
-			-- We never hit any mines.
-			elseif key == "HitMine" then
-				best_counts[key] = 0
-			-- Upgrade to FA+ window.
-			else
-				best_counts["W0"] = best_counts["W0"] + value
-			end
-		end
-	end
-
-	local possible_ex_score, possible_total = CalculateExScore(player, best_counts)
-	return possible_ex_score, possible_total
-end
-
--- -----------------------------------------------------------------------
 
 -- the BitmapText actor
 local bmt = LoadFont(font)
@@ -106,7 +74,7 @@ end
 
 bmt.ExCountsChangedMessageCommand=function(self, params)
 	if player == params.Player and mods.ShowExScore then
-		local possible_ex_score, current_possible = GetPossibleExScore(params.ExCounts)
+		local possible_ex_score, current_possible = GetPossibleExScore(player, params.ExCounts)
 		local total_possible = params.ActualPossible
 		local current_points = params.ActualPoints
 		local dp_lost = current_possible - current_points

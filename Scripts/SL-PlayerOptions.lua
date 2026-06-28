@@ -583,13 +583,13 @@ local Overrides = {
 		Values = function()
 			local vals = {}
 			if IsUsingWideScreen() then
-				vals = { "JudgmentTilt", "ColumnCues" }
+				vals = { "JudgmentTilt", "ColumnCues", "RunningScoring" }
 				if IsServiceAllowed(SL.GrooveStats.GetScores) then
 					vals[#vals+1] = "DisplayScorebox"
 				end
 			else
 				-- Add in the two removed options if not in WideScreen.
-				vals = { "NPSGraphAtTop", "JudgmentTilt", "ColumnCues" }
+				vals = { "NPSGraphAtTop", "JudgmentTilt", "ColumnCues", "RunningScoring" }
 			end
 			return vals
 		end

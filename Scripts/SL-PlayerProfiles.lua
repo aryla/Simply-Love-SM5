@@ -80,6 +80,7 @@ local permitted_profile_settings = {
 	HideEarlyDecentWayOffFlash     = "boolean",
 
 	PlayerMusicWheelScore = "string",
+	RunningScoring = "boolean",
 
 	----------------------------------
 	-- Profile Settings without OptionRows
