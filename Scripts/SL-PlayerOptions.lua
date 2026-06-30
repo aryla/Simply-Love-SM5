@@ -608,10 +608,12 @@ local Overrides = {
 		end
 	},
 	TiltMultiplier = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
 		Choices = function()
-			local first	= 1
-			local last 	= 3
-			local step 	= 0.5
+			local first	= 0
+			local last 	= 5
+			local step 	= 0.1
 
 			return stringify(range(first, last, step), "%g")
 		end,
