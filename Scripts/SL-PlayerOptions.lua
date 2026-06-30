@@ -640,10 +640,10 @@ local Overrides = {
 	},
 	-------------------------------------------------------------------------
 	ErrorBarTrim = {
-		Values = { "Off", "Great", "Excellent" },
+		Values = { "Off", "Great", "Excellent", "Fantastic" },
 		Choices = function()
 			local tns = "TapNoteScore"
-			local t = {THEME:GetString("SLPlayerOptions","Off"), THEME:GetString(tns,"W3"), THEME:GetString(tns,"W2")}
+			local t = {THEME:GetString("SLPlayerOptions","Off"), THEME:GetString(tns,"W3"), THEME:GetString(tns,"W2"), THEME:GetString(tns,"W1")}
 			return t
 		end,
 	},
