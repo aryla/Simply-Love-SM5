@@ -12,8 +12,13 @@ function GetGameplayLayout(player, reverse)
     local judgmentY = _screen.cy + (reverse and 30 or -30)
     local judgmentHeight = 40
 
+    -- Initialize all to prevent indexing errors in applying OffsetYs
     local layout = {
         Combo = { y = comboY },
+        Judgment = { y = judgmentY },
+        ErrorBar = { y = 0 },
+        MeasureCounter = { y = 0 },
+        SubtractiveScoring = { y = 0 },
     }
 
     -- In casual mode none of the other elements are displayed, so shortcut.
@@ -68,6 +73,14 @@ function GetGameplayLayout(player, reverse)
         layout.Combo.y = math.max(layout.Combo.y, bottomY + 20)
     end
 
+    -- Apply player specific Y adjustments after other calculations are done. The intention is to
+    -- have the settings only affect a single element's absolute position on screen.
+    layout.Judgment.y = layout.Judgment.y + mods.JudgmentOffsetY
+    layout.Combo.y = layout.Combo.y + mods.ComboOffsetY
+    layout.ErrorBar.y = layout.ErrorBar.y + mods.ErrorBarOffsetY
+    layout.MeasureCounter.y = layout.MeasureCounter.y + mods.MeasureCounterOffsetY
+    layout.SubtractiveScoring.y = layout.SubtractiveScoring.y + mods.SubtractiveScoringOffsetY
+
     return layout
 end
 
@@ -80,4 +93,9 @@ function ComboTransformCommand(self, params)
     -- X is relative to the center of the note field and Y is relative to the
     -- center of the screen, so we have to translate the coordinates.
     self:xy(0, layout.Combo.y - _screen.cy)
+end
+
+function JudgmentTransformCommand(self, params)
+    local layout = GetGameplayLayout(params.Player, params.bReverse)
+    self:xy(0, layout.Judgment.y - _screen.cy)
 end

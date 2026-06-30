@@ -69,7 +69,13 @@ local PlayerDefaults = {
 
 				PlayerMusicWheelScore = PlayerMusicWheelScore_No,
 				RunningScoring = false,
-				ScoreAlternatePosition = false
+				ScoreAlternatePosition = false,
+				JudgmentOffsetY = 0,
+				ComboOffsetY = 0,
+				ErrorBarOffsetY = 0,
+				MeasureCounterOffsetY = 0,
+				SubtractiveScoringOffsetY = 0,
+				DifficultyMeterOffsetX = 0
 			}
 			-- TODO(teejusb): Rename "Streams" as the data contains more information than that.
 			self.Streams = {

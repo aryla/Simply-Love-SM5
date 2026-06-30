@@ -5,7 +5,8 @@ local _x = _screen.cx + (player==PLAYER_1 and -1 or 1) * SL_WideScale(292.5, 342
 
 return Def.ActorFrame{
 	InitCommand=function(self)
-		local adjusted_offset_x = SL[pn].ActiveModifiers.NoteFieldOffsetX * (player == PLAYER_1 and -1 or 1)
+		local mods = SL[pn].ActiveModifiers
+		local adjusted_offset_x = (mods.NoteFieldOffsetX + mods.DifficultyMeterOffsetX) * (player == PLAYER_1 and -1 or 1)
 		self:xy(_x + adjusted_offset_x, 56)
 	end,
 

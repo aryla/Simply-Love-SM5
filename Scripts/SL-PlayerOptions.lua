@@ -934,7 +934,43 @@ local Overrides = {
 				if list[3] then SL.Global.ScreenAfter.PlayerOptions3 = "ScreenPlayerOptions2" end
 			end
 		end
-	}
+	},
+	-------------------------------------------------------------------------
+	JudgmentOffsetY = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.h, _screen.h, 1) end
+	},
+	-------------------------------------------------------------------------
+	ComboOffsetY = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.h, _screen.h, 1) end
+	},
+	-------------------------------------------------------------------------
+	ErrorBarOffsetY = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.h, _screen.h, 1) end
+	},
+	-------------------------------------------------------------------------
+	MeasureCounterOffsetY = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.h, _screen.h, 1) end
+	},
+	-------------------------------------------------------------------------
+	SubtractiveScoringOffsetY = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.h, _screen.h, 1) end
+	},
+	-------------------------------------------------------------------------
+	DifficultyMeterOffsetX = {
+		LayoutType = "ShowOneInRow",
+		ExportOnChange = true,
+		Choices = function() return range(-_screen.w, _screen.w, 1) end
+	},
 	-------------------------------------------------------------------------
 }
 

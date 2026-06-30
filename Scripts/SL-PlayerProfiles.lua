@@ -82,6 +82,12 @@ local permitted_profile_settings = {
 	PlayerMusicWheelScore = "string",
 	RunningScoring = "boolean",
 	ScoreAlternatePosition = "boolean",
+	JudgmentOffsetY = "number",
+	ComboOffsetY = "number",
+	ErrorBarOffsetY = "number",
+	MeasureCounterOffsetY = "number",
+	SubtractiveScoringOffsetY = "number",
+	DifficultyMeterOffsetX = "number",
 
 	----------------------------------
 	-- Profile Settings without OptionRows
