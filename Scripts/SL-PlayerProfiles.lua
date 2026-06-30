@@ -37,6 +37,7 @@ local permitted_profile_settings = {
 	HideScore            = "boolean",
 	HideDanger           = "boolean",
 	HideComboExplosions  = "boolean",
+	HideSongInfoBar      = "boolean",
 
     LaneCover            = "string",
 	BackgroundBrightness = "string",

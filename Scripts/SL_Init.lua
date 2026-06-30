@@ -22,6 +22,7 @@ local PlayerDefaults = {
 				HideScore = false,
 				HideDanger = false,
 				HideComboExplosions = false,
+				HideSongInfoBar = false,
 
 				FlashMiss = false,
 				FlashWayOff = false,
