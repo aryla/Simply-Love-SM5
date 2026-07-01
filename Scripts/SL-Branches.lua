@@ -337,3 +337,28 @@ Branch.AfterProfileSaveSummary = function()
 		return Branch.AfterInit()
 	end
 end
+
+Branch.TitleMenuChoices = function()
+	local result = {
+		"applydefaultoptions;screen,"..Branch.AllowScreenSelectProfile()..";text,Dance Mode",
+		"screen,ScreenEditMenu;text,Edit Mode",
+		"screen,ScreenOptionsService;text,Options",
+	}
+	if ThemePrefs.Get("TitleMenuPowerOff") then
+		table.insert(result, "screen,ScreenExit;text,Exit to Desktop")
+		table.insert(result, "screen,ScreenPowerOff;text,Power Off")
+	else
+		table.insert(result, "screen,ScreenExit;text,Exit")
+	end
+	return result
+end
+
+Branch.TitleMenuChoiceNames = function()
+	local result = ""
+	for i, _ in ipairs(Branch.TitleMenuChoices()) do
+		if i > 1 then result = result.."," end
+		result = result..i
+	end
+	return result
+end
+

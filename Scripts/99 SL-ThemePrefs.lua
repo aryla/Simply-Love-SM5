@@ -410,6 +410,12 @@ SL_CustomPrefs.Get = function()
 			Choices = { "true", "false" },
 			Values = { true, false },
 		},
+
+		TitleMenuPowerOff = {
+			Default = false,
+			Choices = { "true", "false" },
+			Values = { true, false },
+		},
 	}
 end
 
