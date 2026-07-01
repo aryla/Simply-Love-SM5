@@ -398,6 +398,12 @@ SL_CustomPrefs.Get = function()
 				MusicWheelScore_On,
 			}
 		},
+
+		PgUpPgDnVolumeKeys = {
+			Default = false,
+			Choices = { "true", "false" },
+			Values = { true, false },
+		},
 	}
 end
 
