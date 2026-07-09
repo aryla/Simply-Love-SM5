@@ -401,19 +401,19 @@ SL_CustomPrefs.Get = function()
 
 		PgUpPgDnVolumeKeys = {
 			Default = false,
-			Choices = { "true", "false" },
+			Choices = { THEME:GetString("ThemePrefs","Yes"), THEME:GetString("ThemePrefs","No") },
 			Values = { true, false },
 		},
 
 		AutoSetDefaultProfile = {
 			Default = true,
-			Choices = { "true", "false" },
+			Choices = { THEME:GetString("ThemePrefs","Yes"), THEME:GetString("ThemePrefs","No") },
 			Values = { true, false },
 		},
 
 		TitleMenuPowerOff = {
 			Default = false,
-			Choices = { "true", "false" },
+			Choices = { THEME:GetString("ThemePrefs","Yes"), THEME:GetString("ThemePrefs","No") },
 			Values = { true, false },
 		},
 	}
