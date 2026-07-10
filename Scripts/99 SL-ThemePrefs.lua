@@ -116,8 +116,8 @@ SL_CustomPrefs.Get = function()
 		TitleLogo =
 		{
 			Default = "default",
-			Choices = { "default", "Lategame", "McKylä", "Tarry" },
-			Values  = { "default", "Lategame", "McKyla", "Tarry" },
+			Choices = { "default", "Lategame", "McKylä", "Tarry", "Reaktor" },
+			Values  = { "default", "Lategame", "McKyla", "Tarry", "Reaktor" },
 		},
 		AllowThemeVideos = {
 			Default = true,
